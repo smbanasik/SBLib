@@ -4,6 +4,8 @@
 // TODO: have macros that probe the size of primitive integers and
 // defines these accordingly
 
+namespace SB_LIB {
+
 typedef signed char int8;
 typedef short int16;
 typedef long int32;
@@ -15,6 +17,6 @@ typedef unsigned long uint32;
 typedef unsigned long long uint64;
 
 
-
+}
 
 #endif
