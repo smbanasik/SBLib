@@ -9,7 +9,7 @@ A library meant to serve as a competitor to the standard library.
     - Can we just used stdint?
     - Or should we add our own
 - Do we need our own allocator? (probably not)
-- How do we handle iterators?
+- How do we handle iterators? [Here is a good resource](https://stackoverflow.com/questions/8054273/how-to-implement-an-stl-style-iterator-and-avoid-common-pitfalls)
    - C++ method (each class has their iterator definition with the same interface)
    - Inheritance (create a common iterator interface, then each classes iterator inherits from that)
        - Does this work?
