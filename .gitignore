@@ -1,0 +1,6 @@
+*.sln
+*.vcxproj
+*.vcxproj.*
+.vs
+SBLib
+x64

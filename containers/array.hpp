@@ -9,25 +9,95 @@ template <typename T, mlen N>
 class Array {
 public:
 
-    T at(mlen index) const {
-        if (index > N || index < 0)
+    Array() = default;
+
+    // TODO: iterator interface
+    // RandomAccessIterator
+    class Iterator {
+    public:
+        Iterator() {
+            locale = nullptr;
+        }
+
+        Iterator(T& data) {
+            locale = &data;
+        }
+
+        Iterator& operator++() {
+            locale++;
+            return *this;
+        }
+
+        Iterator operator++(int) {
+            Iterator old = *this;
+            operator++();
+            return old;
+        }
+
+        Iterator operator--() {
+            locale--;
+            return *this;
+        }
+
+        Iterator operator--(int) {
+            Iterator old = *this;
+            operator--();
+            return old;
+        }
+
+        //Iterator operator[](mlen index) {
+        //    if (index > N)
+        //        throw; // TODO: throw message
+        //    return data[index];
+        //}
+
+        bool operator==(const Iterator& rhs) {
+            this.locale == rhs.locale;
+        }
+        bool operator!=(const Iterator& rhs) {
+            return !(this == rhs);
+        }
+
+        T& operator*() {
+            return *locale;
+        }
+
+        T* operator->() {
+            return locale;
+        }
+
+    private:
+        T* locale;
+    };
+    class ConstIterator {
+
+    };
+
+    T& at(mlen index) {
+        if (index > N)
             throw; // TODO: throw message
         return data[index];
     }
 
-    T operator[](mlen index) const {
+    const T& at(mlen index) const {
+        if (index > N)
+            throw; // TODO: throw message
         return data[index];
     }
 
-    T front() const {
+    T& operator[](mlen index) {
+        if (index > N)
+            throw; // TODO: throw message
+        return data[index];
+    }
+
+    T& front() {
         return data[0];
     }
 
-    T back() const {
+    T& back() {
         return data[N];
     }
-
-    // TODO: iterator interface
 
     //template<mlen M>
     //Array<T, M> subarray(mlen start, mlen end) {
@@ -57,7 +127,9 @@ public:
     // - Static operators
     //   - relational (equals, spaceship <=>)
     //   - to_array
-
+    // - Constructors
+    // - Const versions of functiosn
+    // - get read only (returns constant reference)
     
 
 private:
