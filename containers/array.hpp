@@ -156,7 +156,7 @@ public:
         return N;
     }
 
-    const bool operator==(Array<T, N> other) const {
+    const bool operator==(const Array<T, N>& other) const {
         if (&other == &this)
             return true;
         for (mlen idx = 0; idx < N; idx++) {
@@ -168,7 +168,7 @@ public:
 
     // TODO: potentially consider adding self == self contingencies for this
 
-    const bool operator<=>(Array<T, N> other) const {
+    const bool operator<=>(const Array<T, N>& other) const {
         for (mlen idx = 0; idx < N; idx++) {
             if (this[idx] < other[idx])
                 return -1;
@@ -180,6 +180,7 @@ public:
 
     // -----Manipulation-----
 
+    // TODO: iterators
     template<mlen M>
     Array<T, M> subarray(const mlen start, const mlen end) const {
         // TODO: if end > start, reverse iterate
@@ -200,6 +201,7 @@ public:
         }
     }
 
+    // TODO: iterators
     void fill(T& value, mlen start, mlen end) {
         // TODO: bounds checking
         for (mlen idx = start; idx < end; idx++) {
@@ -207,6 +209,7 @@ public:
         }
     }
 
+    // TODO: iterators
     void swap(mlen first, mlen second) {
         T temp = arr_data[first];
         arr_data[first] = arr_data[second];
