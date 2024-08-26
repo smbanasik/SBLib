@@ -23,8 +23,7 @@ public:
         return new_arr;
     }
 
-
-    Array() = default;
+    Array() : arr_data{} {}
 
     Array(const T& fill_value) {
         fill(fill_value);
@@ -53,28 +52,19 @@ public:
             return old;
         }
 
-        Iterator operator--() {
-            locale--;
-            return *this;
+        Iterator get_next() {
+            Iterator next = this;
+            return ++next;
         }
-
-        Iterator operator--(int) {
-            Iterator old = *this;
-            operator--();
-            return old;
-        }
-
-        //Iterator operator[](mlen index) {
-        //    if (index > N)
-        //        throw; // TODO: throw message
-        //    return arr_data[index];
-        //}
 
         bool operator==(const Iterator& rhs) {
-            this.locale == rhs.locale;
+            return this->locale == rhs.locale;
         }
+
+        // TODO: why can't this be auto generated?
+        // Further, why can't we set !(this == that) ????
         bool operator!=(const Iterator& rhs) {
-            return !(this == rhs);
+            return !(this->locale == rhs.locale);
         }
 
         T& operator*() {
@@ -85,6 +75,39 @@ public:
             return locale;
         }
 
+        Iterator& operator--() {
+            locale--;
+            return *this;
+        }
+
+        Iterator operator--(int) {
+            Iterator old = *this;
+            operator--();
+            return old;
+        }
+
+        Iterator get_prev() {
+            Iterator prev = this;
+            return --prev;
+        }
+
+        Iterator& operator[](mlen index) {
+            return ;
+        }
+
+        Iterator& operator+= (Iterator& ) {
+        }
+        Iterator& operator-= (Iterator& ) {
+        }
+
+        //Iterator operator+(mlen index) {
+        // }
+        //Iterator operator-(mlen index) {
+        // }
+
+        //Iterator operator <=> (const iterator& rhs) {
+        // }
+
     private:
         T* locale;
     };
@@ -94,15 +117,21 @@ public:
 
     // -----Access-----
 
+    // TODO: improve throw messages
+
     T& at(mlen index) {
-        if (N < index)
-            throw; // TODO: throw message
+        if (N <= index)
+            throw "Index Out of Bounds.";
         return arr_data[index];
     }
 
     T& operator[](mlen index) {
-        if (N < index)
-            throw; // TODO: throw message
+        if (N <= index)
+            throw "Index Out of Bounds.";
+        return arr_data[index];
+    }
+
+    T& f_at(mlen index) {
         return arr_data[index];
     }
 
@@ -111,7 +140,7 @@ public:
     }
 
     T& back() {
-        return arr_data[N];
+        return arr_data[N - 1];
     }
 
     T* data() {
@@ -119,14 +148,14 @@ public:
     }
 
     const T& at(mlen index) const {
-        if (N < index)
-            throw; // TODO: throw message
+        if (N <= index)
+            throw "Index Out of Bounds.";
         return arr_data[index];
     }
 
     const T& operator[](mlen index) const {
-        if (N < index)
-            throw; // TODO: throw message
+        if (N <= index)
+            throw "Index Out of Bounds.";
         return arr_data[index];
     }
 
@@ -135,12 +164,15 @@ public:
     }
 
     const T& back() const {
-        return arr_data[N];
+        return arr_data[N - 1];
     }
 
     const T* data() const {
         return arr_data;
     }
+
+    // TODO: iterator access
+    // begin, end, cbegin, cend, rbegin, rend, rcbegin, rcend
 
     // -----Querying-----
 
@@ -156,6 +188,7 @@ public:
         return N;
     }
 
+    // TODO: friend the equals and inequality operators, declare outside of class
     const bool operator==(const Array<T, N>& other) const {
         if (&other == &this)
             return true;
@@ -211,6 +244,7 @@ public:
 
     // TODO: iterators
     void swap(mlen first, mlen second) {
+        // TODO: bounds checking
         T temp = arr_data[first];
         arr_data[first] = arr_data[second];
         arr_data[second] = temp;

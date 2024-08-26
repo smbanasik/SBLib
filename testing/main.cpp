@@ -1,5 +1,6 @@
 #include "../types.hpp"
 #include "../containers/array.hpp"
+#include "../algorithms/data_manip.hpp"
 
 #include <iostream>
 #include <string>
@@ -23,4 +24,13 @@ int main() {
         std::cout << nums_arr[i] << " ";
     }
 
+    SB_LIB::Array<int, 5> new_nums;
+
+    SB_LIB::Array<int, 5>::Iterator it = nums_arr[0], it2 = new_nums[0], it_end = nums_arr.back();
+
+    SB_LIB::copy(it, it_end, it2);
+
+    for (int i = 0; i < 5; i++) {
+        std::cout << new_nums[i] << " ";
+    }
 }
