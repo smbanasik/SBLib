@@ -25,7 +25,7 @@ public:
 
     Array() : arr_data{} {}
 
-    Array(const T& fill_value) {
+    explicit Array(const T& fill_value) {
         fill(fill_value);
     }
 
@@ -33,12 +33,40 @@ public:
     // RandomAccessIterator
     class Iterator {
     public:
+        // TODO: iterator traits typedefs
+        
         Iterator() {
             locale = nullptr;
         }
+        
+        ~Iterator() {
+            locale = nullptr;
+        }
 
-        Iterator(T& arr_data) {
+        // TODO: is explicit necessary here?
+        explicit Iterator(const T& arr_data) {
             locale = &arr_data;
+        }
+        
+        Iterator(const Iterator& other) {
+            locale = other.locale
+        }
+        
+        Iterator(Iterator&& other) noexcept {
+            locale = other.locale;
+            other.locale = nullptr;
+        }
+        
+        Iterator& operator=(const Iterator& other) {
+            locale = other.locale;
+            return *this;
+        }
+        
+        Iterator& operator=(Iterator&& other) {
+            T* temp = locale;
+            locale = other.locale
+            other.locale = temp;
+            return *this;
         }
 
         Iterator& operator++() {
@@ -57,14 +85,14 @@ public:
             return ++next;
         }
 
-        bool operator==(const Iterator& rhs) {
-            return this->locale == rhs.locale;
+        friend bool operator==(const Iterator& lhs, const Iterator& rhs) {
+            return lhs.locale == rhs.locale;
         }
 
         // TODO: why can't this be auto generated?
         // Further, why can't we set !(this == that) ????
-        bool operator!=(const Iterator& rhs) {
-            return !(this->locale == rhs.locale);
+        friend bool operator!=(const Iterator& lhs, const Iterator& rhs) {
+            return !(lhs.locale == rhs.locale);
         }
 
         T& operator*() {
@@ -92,21 +120,35 @@ public:
         }
 
         Iterator& operator[](mlen index) {
-            return ;
+            return *(locale + index);
         }
 
-        Iterator& operator+= (Iterator& ) {
+        Iterator& operator+= (mlen index) {
+            locale += index;
+            return *this
         }
-        Iterator& operator-= (Iterator& ) {
+        Iterator& operator-= (mlen index) {
+            locale -= index
+            return *this
         }
 
-        //Iterator operator+(mlen index) {
-        // }
-        //Iterator operator-(mlen index) {
-        // }
-
-        //Iterator operator <=> (const iterator& rhs) {
-        // }
+        friend Iterator operator+(Iterator lhs, mlen rhs) {
+            lhs += rhs;
+            return lhs;
+        }
+        friend Iterator operator+(mlen lhs, const Iteartor& rhs) {
+            return lhs + rhs.locale;
+        }
+        friend Iterator operator-(Iterator lhs, mlen rhs) {
+            lhs -= rhs;
+            return rhs;
+        }
+        friend Iterator operator-(mlen lhs, const Iterator& rhs) {
+            return lhs - rhs.locale;
+        }
+        friend Iterator operator <=> (const Iterator& lhs, const Iterator& rhs) {
+            return lhs <=> rhs.locale;
+        }
 
     private:
         T* locale;
@@ -188,24 +230,21 @@ public:
         return N;
     }
 
-    // TODO: friend the equals and inequality operators, declare outside of class
-    const bool operator==(const Array<T, N>& other) const {
-        if (&other == &this)
+    friend const bool operator==(const Array<T, N>& lhs, const Array<T, N>& rhs) const {
+        if (&lhs == &rhs)
             return true;
         for (mlen idx = 0; idx < N; idx++) {
-            if (other[idx] != this[idx])
+            if (lhs[idx] != rhs[idx])
                 return false;
         }
         return true;
     }
-
-    // TODO: potentially consider adding self == self contingencies for this
-
-    const bool operator<=>(const Array<T, N>& other) const {
+    
+    friend const bool operator<=>(const Array<T, N>& lhs, const Array<T, N>& rhs) const {
         for (mlen idx = 0; idx < N; idx++) {
-            if (this[idx] < other[idx])
+            if (lhs[idx] < rhs[idx])
                 return -1;
-            else if (this[idx] > other[idx])
+            else if (lhs[idx] > rhs[idx])
                 return 1;
         }
         return 0;
