@@ -26,7 +26,7 @@ int main() {
 
     SB_LIB::Array<int, 5> new_nums;
 
-    SB_LIB::Array<int, 5>::Iterator it = nums_arr[0], it2 = new_nums[0], it_end = nums_arr.back();
+    SB_LIB::Array<int, 5>::Iterator it = nums_arr.begin(), it2 = new_nums.begin(), it_end = nums_arr.end();
 
     SB_LIB::copy(it, it_end, it2);
 

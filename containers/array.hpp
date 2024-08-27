@@ -33,7 +33,13 @@ public:
     // RandomAccessIterator
     class Iterator {
     public:
-        // TODO: iterator traits typedefs
+        // TODO: iterator traits typedefs, I understand that I may need them
+        // but I'm not sure why yet.
+        // typedef typename ??? difference_type;
+        // typedef typename T value_type;
+        // typedef typename T& reference;
+        // typedef typename T* pointer;
+        // typedef tyename ??? iterator_category;
         
         Iterator() {
             locale = nullptr;
@@ -43,13 +49,16 @@ public:
             locale = nullptr;
         }
 
-        // TODO: is explicit necessary here?
-        explicit Iterator(const T& arr_data) {
-            locale = &arr_data;
+        // STL containers do not permit this, I have browsed through 
+        // some implementations that make use of a base iterator class,
+        // which has some sort of address to iterator method.
+        // However, for now this is fine.
+        Iterator(T* ptr) {
+            locale = ptr;
         }
         
         Iterator(const Iterator& other) {
-            locale = other.locale
+            locale = other.locale;
         }
         
         Iterator(Iterator&& other) noexcept {
@@ -64,7 +73,7 @@ public:
         
         Iterator& operator=(Iterator&& other) {
             T* temp = locale;
-            locale = other.locale
+            locale = other.locale;
             other.locale = temp;
             return *this;
         }
@@ -87,12 +96,6 @@ public:
 
         friend bool operator==(const Iterator& lhs, const Iterator& rhs) {
             return lhs.locale == rhs.locale;
-        }
-
-        // TODO: why can't this be auto generated?
-        // Further, why can't we set !(this == that) ????
-        friend bool operator!=(const Iterator& lhs, const Iterator& rhs) {
-            return !(lhs.locale == rhs.locale);
         }
 
         T& operator*() {
@@ -125,18 +128,18 @@ public:
 
         Iterator& operator+= (mlen index) {
             locale += index;
-            return *this
+            return *this;
         }
         Iterator& operator-= (mlen index) {
-            locale -= index
-            return *this
+            locale -= index;
+                return *this;
         }
 
         friend Iterator operator+(Iterator lhs, mlen rhs) {
             lhs += rhs;
             return lhs;
         }
-        friend Iterator operator+(mlen lhs, const Iteartor& rhs) {
+        friend Iterator operator+(mlen lhs, const Iterator& rhs) {
             return lhs + rhs.locale;
         }
         friend Iterator operator-(Iterator lhs, mlen rhs) {
@@ -154,8 +157,118 @@ public:
         T* locale;
     };
     class ConstIterator {
+    public:
+        ConstIterator() {
+            locale = nullptr;
+        }
 
+        ~ConstIterator() {
+            locale = nullptr;
+        }
+        ConstIterator(T* ptr) {
+            locale = ptr;
+        }
+
+        ConstIterator(const ConstIterator& other) {
+            locale = other.locale;
+        }
+
+        ConstIterator(ConstIterator&& other) noexcept {
+            locale = other.locale;
+            other.locale = nullptr;
+        }
+
+        ConstIterator& operator=(const ConstIterator& other) {
+            locale = other.locale;
+            return *this;
+        }
+
+        ConstIterator& operator=(ConstIterator&& other) {
+            T* temp = locale;
+            locale = other.locale;
+            other.locale = temp;
+            return *this;
+        }
+
+        const ConstIterator& operator++() const {
+            locale++;
+            return *this;
+        }
+
+        const ConstIterator operator++(int) const {
+            Iterator old = *this;
+            operator++();
+            return old;
+        }
+
+        const ConstIterator get_next() const {
+            ConstIterator next = this;
+            return ++next;
+        }
+
+        friend bool operator==(const Iterator& lhs, const Iterator& rhs) {
+            return lhs.locale == rhs.locale;
+        }
+
+        const T& operator*() const {
+            return *locale;
+        }
+
+        const T* operator->() const {
+            return locale;
+        }
+
+        ConstIterator& operator--() const {
+            locale--;
+            return *this;
+        }
+
+        ConstIterator operator--(int) const {
+            ConstIterator old = *this;
+            operator--();
+            return old;
+        }
+
+        ConstIterator get_prev() const {
+            ConstIterator prev = this;
+            return --prev;
+        }
+
+        ConstIterator& operator[](mlen index) const{
+            return *(locale + index);
+        }
+
+        ConstIterator& operator+= (mlen index) const {
+            locale += index;
+            return *this;
+        }
+        ConstIterator& operator-= (mlen index) const {
+            locale -= index;
+            return *this;
+        }
+
+        friend ConstIterator operator+(ConstIterator lhs, mlen rhs) {
+            lhs += rhs;
+            return lhs;
+        }
+        friend ConstIterator operator+(mlen lhs, const ConstIterator& rhs) {
+            return lhs + rhs.locale;
+        }
+        friend ConstIterator operator-(ConstIterator lhs, mlen rhs) {
+            lhs -= rhs;
+            return rhs;
+        }
+        friend ConstIterator operator-(mlen lhs, const ConstIterator& rhs) {
+            return lhs - rhs.locale;
+        }
+        friend ConstIterator operator <=> (const ConstIterator& lhs, const ConstIterator& rhs) {
+            return lhs <=> rhs.locale;
+        }
+
+    private:
+        T* locale;
     };
+    // TODO: reverse iterators
 
     // -----Access-----
 
@@ -215,6 +328,19 @@ public:
 
     // TODO: iterator access
     // begin, end, cbegin, cend, rbegin, rend, rcbegin, rcend
+    Iterator begin() {
+        return Iterator(&arr_data[0]);
+    }
+
+    Iterator end() {
+        return Iterator(&arr_data[N]);
+    }
+
+    Iterator it_at(mlen index) {
+        if (N <= index)
+            throw "Index out of bounds";
+        return Iterator(&arr_data[index]);
+    }
 
     // -----Querying-----
 
@@ -230,7 +356,7 @@ public:
         return N;
     }
 
-    friend const bool operator==(const Array<T, N>& lhs, const Array<T, N>& rhs) const {
+    friend const bool operator==(const Array<T, N>& lhs, const Array<T, N>& rhs) {
         if (&lhs == &rhs)
             return true;
         for (mlen idx = 0; idx < N; idx++) {
@@ -240,7 +366,7 @@ public:
         return true;
     }
     
-    friend const bool operator<=>(const Array<T, N>& lhs, const Array<T, N>& rhs) const {
+    friend const bool operator<=>(const Array<T, N>& lhs, const Array<T, N>& rhs) {
         for (mlen idx = 0; idx < N; idx++) {
             if (lhs[idx] < rhs[idx])
                 return -1;
