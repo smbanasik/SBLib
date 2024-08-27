@@ -2,6 +2,8 @@
 #define SB_LIB_ARRAY_HPP
 
 #include "../types.hpp"
+#include "../structures/iterator_categories.hpp"
+#include "../structures/reverse_iterator.hpp"
 
 namespace SB_LIB {
 
@@ -29,17 +31,15 @@ public:
         fill(fill_value);
     }
 
-    // TODO: iterator interface
-    // RandomAccessIterator
     class Iterator {
     public:
-        // TODO: iterator traits typedefs, I understand that I may need them
-        // but I'm not sure why yet.
-        // typedef typename ??? difference_type;
-        // typedef typename T value_type;
-        // typedef typename T& reference;
-        // typedef typename T* pointer;
-        // typedef tyename ??? iterator_category;
+        // TODO: Consider redoing IteratorCategory implementation,
+        // also consider modifying random_access
+        // typedef typename ??? difference_type
+        typedef typename T value_type;
+        typedef typename T& reference;
+        typedef typename T* pointer;
+        typedef typename IteratorCategory::RANDOM_ACCESS iterator_category;
         
         Iterator() {
             locale = nullptr;
@@ -51,7 +51,7 @@ public:
 
         // STL containers do not permit this, I have browsed through 
         // some implementations that make use of a base iterator class,
-        // which has some sort of address to iterator method.
+        // which has some sort of address to iterator constructor.
         // However, for now this is fine.
         Iterator(T* ptr) {
             locale = ptr;
@@ -130,6 +130,7 @@ public:
             locale += index;
             return *this;
         }
+        
         Iterator& operator-= (mlen index) {
             locale -= index;
                 return *this;
@@ -139,18 +140,22 @@ public:
             lhs += rhs;
             return lhs;
         }
+        
         friend Iterator operator+(mlen lhs, const Iterator& rhs) {
             return lhs + rhs.locale;
         }
+        
         friend Iterator operator-(Iterator lhs, mlen rhs) {
             lhs -= rhs;
             return rhs;
         }
+        
         friend Iterator operator-(mlen lhs, const Iterator& rhs) {
             return lhs - rhs.locale;
         }
+        
         friend Iterator operator <=> (const Iterator& lhs, const Iterator& rhs) {
-            return lhs <=> rhs.locale;
+            return lhs.locale <=> rhs.locale;
         }
 
     private:
@@ -158,6 +163,11 @@ public:
     };
     class ConstIterator {
     public:
+        typedef typename T value_type;
+        typedef typename T& reference;
+        typedef typename T* pointer;
+        typedef typename IteratorCategory::RANDOM_ACCESS iterator_category;
+    
         ConstIterator() {
             locale = nullptr;
         }
@@ -165,6 +175,7 @@ public:
         ~ConstIterator() {
             locale = nullptr;
         }
+        
         ConstIterator(T* ptr) {
             locale = ptr;
         }
@@ -262,13 +273,14 @@ public:
             return lhs - rhs.locale;
         }
         friend ConstIterator operator <=> (const ConstIterator& lhs, const ConstIterator& rhs) {
-            return lhs <=> rhs.locale;
+            return lhs.locale <=> rhs.locale;
         }
 
     private:
         T* locale;
     };
-    // TODO: reverse iterators
+    typedef ReverseIterator<Iterator> reverse_iterator;
+    typedef ReverseIterator<ConstIterator> const_reverse_iterator;
 
     // -----Access-----
 
@@ -327,7 +339,7 @@ public:
     }
 
     // TODO: iterator access
-    // begin, end, cbegin, cend, rbegin, rend, rcbegin, rcend
+    //rbegin, rend, rcbegin, rcend
     Iterator begin() {
         return Iterator(&arr_data[0]);
     }
@@ -340,6 +352,14 @@ public:
         if (N <= index)
             throw "Index out of bounds";
         return Iterator(&arr_data[index]);
+    }
+    
+    ConstIterator cbegin() {
+        return ConstIterator(&arr_data[0]);
+    }
+    
+    ConstIterator cend() {
+        return Iteartor(&arr_data[N]);
     }
 
     // -----Querying-----
