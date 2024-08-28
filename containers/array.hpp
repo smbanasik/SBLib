@@ -85,7 +85,7 @@ public:
             return *this;
         }
         
-        Iterator& operator=(Iterator&& other) {
+        Iterator& operator=(Iterator&& other) noexcept {
             T* temp = locale;
             locale = other.locale;
             other.locale = temp;
@@ -104,7 +104,7 @@ public:
         }
 
         Iterator get_next() {
-            Iterator next = this;
+            Iterator next = *this;
             return ++next;
         }
 
@@ -132,11 +132,11 @@ public:
         }
 
         Iterator get_prev() {
-            Iterator prev = this;
+            Iterator prev = *this;
             return --prev;
         }
 
-        Iterator& operator[](mlen index) {
+        T& operator[](mlen index) {
             return *(locale + index);
         }
 

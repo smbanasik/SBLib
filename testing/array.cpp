@@ -85,7 +85,52 @@ static bool test_access() {
 
 static bool test_iterator() {
 
-    // TODO: test all iterator operations
+    SB_LIB::Array<int, 10> arr{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+    SB_LIB::Array<int, 10>::Iterator arr_it(&arr.at(0));
+
+    auto arr_end = arr.begin();
+    arr_end = arr.end();
+
+    if (*(arr_it++) != 1)
+        return false;
+
+    if (*(arr_it) != 2)
+        return false;
+
+    if (*(++arr_it) != 3)
+        return false;
+
+    auto new_it = arr_it.get_next();
+
+    if (*new_it != 4)
+        return false;
+
+    auto prev_it = new_it.get_prev();
+
+    if (arr_it != prev_it)
+        return false;
+
+    if (arr_it > new_it)
+        return false;
+
+    new_it--;
+
+    if (arr_it < --new_it)
+        return false;
+
+    if (arr_it[2] != *(arr_it + 2))
+        return false;
+
+    arr_it += 2;
+
+    if (*arr_it != 5)
+        return false;
+
+    arr_it = 2 + arr_it;
+
+    // TODO: const iterator tests
+
     return true;
 }
 
