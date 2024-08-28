@@ -36,6 +36,9 @@ static bool test_initialization() {
 
     if (string_arr[2] != "yep!")
         return false;
+    
+    // TODO: copy constructor test
+    // TODO: copy assignment test
 
     return true;
 }
