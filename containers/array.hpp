@@ -5,6 +5,9 @@
 #include "../structures/iterator_categories.hpp"
 #include "../structures/reverse_iterator.hpp"
 
+// TODO: we should implement our own later. Not right now though.
+#include <initializer_list>
+
 namespace SB_LIB {
 
 template <typename T, mlen N>
@@ -26,6 +29,17 @@ public:
     }
 
     Array() : arr_data{} {}
+
+    // TODO: I'd like to use : arr_data(list) but that doesn't work
+    // Unsure why right now.
+    Array(std::initializer_list<T> list) {
+        int count = 0;
+        for (auto it = list.begin(); it != list.end(); it++) {
+            arr_data[count] = *it;
+            count++;
+        }
+    
+    }
 
     explicit Array(const T& fill_value) {
         fill(fill_value);
@@ -154,7 +168,7 @@ public:
             return lhs - rhs.locale;
         }
         
-        friend Iterator operator <=> (const Iterator& lhs, const Iterator& rhs) {
+        friend auto operator <=> (const Iterator& lhs, const Iterator& rhs) {
             return lhs.locale <=> rhs.locale;
         }
 
@@ -326,6 +340,10 @@ public:
         return arr_data[index];
     }
 
+    const T& f_at(mlen index) const {
+        return arr_data[index];
+    }
+
     const T& front() const {
         return arr_data[0];
     }
@@ -354,12 +372,28 @@ public:
         return Iterator(&arr_data[index]);
     }
     
-    ConstIterator cbegin() {
+    ConstIterator cbegin() const {
         return ConstIterator(&arr_data[0]);
     }
     
-    ConstIterator cend() {
-        return Iteartor(&arr_data[N]);
+    ConstIterator cend() const {
+        return Iterator(&arr_data[N]);
+    }
+
+    reverse_iterator rbegin() {
+        return reverse_iterator(end() - 1);
+    }
+
+    reverse_iterator rend() {
+        return reverse_iterator(begin() - 1);
+    }
+
+    const_reverse_iterator crbegin() const {
+        return const_reverse_iterator(end() - 1);
+    }
+
+    const_reverse_iterator crend() const {
+        return const_reverse_iterator(begin() - 1);
     }
 
     // -----Querying-----
@@ -386,7 +420,7 @@ public:
         return true;
     }
     
-    friend const bool operator<=>(const Array<T, N>& lhs, const Array<T, N>& rhs) {
+    friend const auto operator<=>(const Array<T, N>& lhs, const Array<T, N>& rhs) {
         for (mlen idx = 0; idx < N; idx++) {
             if (lhs[idx] < rhs[idx])
                 return -1;

@@ -1,40 +1,19 @@
 #define NORMAL_TESTING
 #ifdef NORMAL_TESTING
-#include "../types.hpp"
-#include "../containers/array.hpp"
-#include "../algorithms/data_manip.hpp"
+#include "test_suite.hpp"
 
 #include <iostream>
-#include <string>
 
 int main() {
-    
-    SB_LIB::Array<std::string, 10> test("a");
 
-    auto new_test = test.subarray<5>(0, 5);
+    bool all_passed = false;
 
-    std::cout << test.size() << "\n";
+    bool array_passed = run_array_suite();
 
-    std::cout << test.at(4) << "\n";
+    all_passed = array_passed;
 
+    std::cout << all_passed;
 
-    int nums[5] = { 0, 1, 2, 3, 4 };
-
-    auto nums_arr = SB_LIB::Array<int, 5>::from_carray(nums, 5);
-
-    for (int i = 0; i < 5; i++) {
-        std::cout << nums_arr[i] << " ";
-    }
-
-    SB_LIB::Array<int, 5> new_nums;
-
-    SB_LIB::Array<int, 5>::Iterator it = nums_arr.begin(), it2 = new_nums.begin(), it_end = nums_arr.end();
-    
-    SB_LIB::copy(it, it_end, it2);
-
-    for (int i = 0; i < 5; i++) {
-        std::cout << new_nums[i] << " ";
-    }
 }
 #endif
 
