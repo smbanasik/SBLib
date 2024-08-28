@@ -1,5 +1,5 @@
-#ifndef SB_LIB_ARRAY_HPP
-#define SB_LIB_ARRAY_HPP
+#ifndef SB_LIB_REVERSE_ITERATOR_HPP
+#define SB_LIB_REVERSE_ITERATOR_HPP
 namespace SB_LIB {
     template<typename Iterator>
     class ReverseIterator {
@@ -50,15 +50,12 @@ namespace SB_LIB {
             return lhs == rhs.it;
         }
         
-        // Uh oh! How do we use this? We need the iterator traits!
-        // We need to return an Iterator::reference
-        // and an Iterator::pointer
         Iterator::reference operator*() {
-            return *locale;
+            return *(it);
         }
         
         Iterator::pointer operator->() {
-            return locale;
+            return it;
         }
         
         ReverseIterator& operator--() {

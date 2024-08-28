@@ -39,7 +39,7 @@ public:
         typedef typename T value_type;
         typedef typename T& reference;
         typedef typename T* pointer;
-        typedef typename IteratorCategory::RANDOM_ACCESS iterator_category;
+        typedef typename IteratorRandomAccess iterator_category;
         
         Iterator() {
             locale = nullptr;
@@ -166,7 +166,7 @@ public:
         typedef typename T value_type;
         typedef typename T& reference;
         typedef typename T* pointer;
-        typedef typename IteratorCategory::RANDOM_ACCESS iterator_category;
+        typedef typename IteratorRandomAccess iterator_category;
     
         ConstIterator() {
             locale = nullptr;

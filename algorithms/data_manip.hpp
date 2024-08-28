@@ -20,7 +20,7 @@ namespace SB_LIB {
             *target = *first;
         }
     }
-    
+
     template<typename T>
     void swap(T& one, T& two) {
         T temp = one;
