@@ -58,9 +58,7 @@ public:
 
     class Iterator {
     public:
-        // TODO: Consider redoing IteratorCategory implementation,
-        // also consider modifying random_access
-        // typedef typename ??? difference_type
+        typedef typename ptr_diff difference_type
         typedef typename T value_type;
         typedef typename T& reference;
         typedef typename T* pointer;
@@ -188,6 +186,7 @@ public:
     };
     class ConstIterator {
     public:
+        typedef typename ptr_diff difference_type
         typedef typename T value_type;
         typedef typename T& reference;
         typedef typename T* pointer;
@@ -367,8 +366,6 @@ public:
         return arr_data;
     }
 
-    // TODO: iterator access
-    //rbegin, rend, rcbegin, rcend
     Iterator begin() {
         return Iterator(&arr_data[0]);
     }
