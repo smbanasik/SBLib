@@ -10,24 +10,34 @@
 
 namespace SB_LIB {
 
+Array<T,N> arr_from_carray(T* arr_start, mlen length) {
+        
+    Array<T, N> new_arr;
+
+    // TODO: use SB_LIB ll_copy to handle this?
+
+    for (T* addr = arr_start, j = 0; addr < arr_start + length; addr++, j++) {
+
+        new_arr[j] = *(addr);
+    }
+    
+    return new_arr;
+}
+    
+template<mlen M, typename ForwardIterator>
+Array<ForwardIterator::value_type, M> arr_from_iterators(ForwardIterator start) {
+    
+    Array<ForwardIterator::value_type, M> new_arr; 
+    for(mlen counter = 0; counter < M; ++counter, ++start) {
+        new_arr[counter] = *start;
+    }
+    
+    return new_arr;
+}
+
 template <typename T, mlen N>
 class Array {
 public:
-
-    Array<T,N> static from_carray(T* arr_start, mlen length) {
-        
-        Array<T, N> new_arr;
-
-        // TODO: use SB_LIB ll_copy to handle this?
-
-        for (T* addr = arr_start, j = 0; addr < arr_start + length; addr++, j++) {
-
-            new_arr[j] = *(addr);
-        }
-        
-        return new_arr;
-    }
-
     Array() : arr_data{} {}
 
     // TODO: I'd like to use : arr_data(list) but that doesn't work
@@ -428,45 +438,6 @@ public:
                 return 1;
         }
         return 0;
-    }
-
-    // -----Manipulation-----
-
-    // TODO: iterators
-    template<mlen M>
-    Array<T, M> subarray(const mlen start, const mlen end) const {
-        // TODO: if end > start, reverse iterate
-        // TODO: throw if size invalid
-        Array<T, M> new_arr;
-
-        for (mlen idx = start, j = 0; idx < end; idx++, j++) {
-
-            new_arr[j] = this->arr_data[idx];
-        }
-
-        return new_arr;
-    }
-
-    void fill(const T& value) {
-        for (mlen idx = 0; idx < N; idx++) {
-            arr_data[idx] = value;
-        }
-    }
-
-    // TODO: iterators
-    void fill(T& value, mlen start, mlen end) {
-        // TODO: bounds checking
-        for (mlen idx = start; idx < end; idx++) {
-            arr_data[idx] = *value;
-        }
-    }
-
-    // TODO: iterators
-    void swap(mlen first, mlen second) {
-        // TODO: bounds checking
-        T temp = arr_data[first];
-        arr_data[first] = arr_data[second];
-        arr_data[second] = temp;
     }
 
 private:
