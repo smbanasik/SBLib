@@ -10,6 +10,7 @@
 
 namespace SB_LIB {
 
+template<typename T, mlen N>
 Array<T,N> arr_from_carray(T* arr_start, mlen length) {
         
     Array<T, N> new_arr;
