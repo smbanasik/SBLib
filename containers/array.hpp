@@ -22,7 +22,6 @@ public:
             arr_data[count] = *it;
             count++;
         }
-    
     }
 
     explicit Array(const T& fill_value) {
@@ -145,7 +144,7 @@ public:
         
         friend Iterator operator-(Iterator lhs, mlen rhs) {
             lhs -= rhs;
-            return rhs;
+            return lhs;
         }
         
         friend Iterator operator-(mlen lhs, const Iterator& rhs) {
@@ -282,6 +281,7 @@ public:
     private:
         const T* locale;
     };
+    // TODO: figure out what to do with names here7
     typedef ReverseIterator<Iterator> reverse_iterator;
     typedef ReverseIterator<ConstIterator> const_reverse_iterator;
 

@@ -39,6 +39,7 @@ static bool test_initialization() {
     
     // TODO: copy constructor test
     // TODO: copy assignment test
+    // TODO: test subarray   
 
     return true;
 }
@@ -136,7 +137,13 @@ static bool test_iterator() {
 }
 
 static bool test_reviterator() {
-    // TODO: test all reverse iterator operations
+    
+    SB_LIB::Array<int, 10> arr{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+
+    SB_LIB::Array<int, 10>::reverse_iterator arr_it(arr.rbegin());
+
+
+
     return true;
 }
 
@@ -177,16 +184,11 @@ static bool test_query_operators() {
 
 static bool test_manipulation() {
 
-    // TODO: subarray
-
     // TODO: fill
+
+    // TODO: copy
     
     // TODO: swap
-    return true;
-}
-
-static bool test_algorithms() {
-    // TODO: copy and swap
     return true;
 }
 
@@ -194,7 +196,7 @@ static int use_counter(int& counter) {
     return counter++;
 }
 
-const int NUM_TESTS = 7;
+const int NUM_TESTS = 6;
 bool run_array_suite() {
     bool all_passed = true;
     
@@ -210,7 +212,6 @@ bool run_array_suite() {
     tests[use_counter(counter)] = test_reviterator();
     tests[use_counter(counter)] = test_query_operators();
     tests[use_counter(counter)] = test_manipulation();
-    tests[use_counter(counter)] = test_algorithms ();
 
     for (int i = 0; i < NUM_TESTS; i++) {
         all_passed = all_passed && tests[i];
