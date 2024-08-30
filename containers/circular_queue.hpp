@@ -5,7 +5,6 @@
 #include "../structures/iterator_categories.hpp"
 #include "../structures/reverse_iterator.hpp"
 
-// TODO: we should implement our own later. Not right now though.
 #include <initializer_list>
 
 namespace SB_LIB {
@@ -13,52 +12,29 @@ namespace SB_LIB {
 template <typename T, mlen N>
 class CircularQueue {
 public:
+    CircularQueue() : arr_data() {}
 
-    CircularQueue<T,N> static from_carray(T* arr_start, mlen length) {
-        
-        CircularQueue<T, N> new_arr;
-
-        // TODO: use SB_LIB ll_copy to handle this?
-
-        for (T* addr = arr_start, j = 0; addr < arr_start + length; addr++, j++) {
-
-            new_arr[j] = *(addr);
-        }
-        
-        return new_arr;
-    }
-
-    CircularQueue() : arr_data{} {}
-
-    // TODO: I'd like to use : arr_data(list) but that doesn't work
-    // Unsure why right now.
     CircularQueue(std::initializer_list<T> list) {
-        int count = 0;
-        for (auto it = list.begin(); it != list.end(); it++) {
-            arr_data[count] = *it;
-            count++;
+        for (auto it = list.begin(); it != list.end(); ++it) {
+            arr_data[front] = *it;
+            ++front;
         }
-    
     }
 
-    explicit CircularQueue(const T& fill_value) {
-        fill(fill_value);
-    }
+    // TODO: cast queue to array
 
     class Iterator {
     public:
-        // TODO: Consider redoing IteratorCategory implementation,
-        // also consider modifying random_access
-        // typedef typename ??? difference_type
+        typedef typename ptr_diff difference_type;
         typedef typename T value_type;
         typedef typename T& reference;
         typedef typename T* pointer;
         typedef typename IteratorRandomAccess iterator_category;
-        
+
         Iterator() {
             locale = nullptr;
         }
-        
+
         ~Iterator() {
             locale = nullptr;
         }
@@ -70,21 +46,21 @@ public:
         Iterator(T* ptr) {
             locale = ptr;
         }
-        
+
         Iterator(const Iterator& other) {
             locale = other.locale;
         }
-        
+
         Iterator(Iterator&& other) noexcept {
             locale = other.locale;
             other.locale = nullptr;
         }
-        
+
         Iterator& operator=(const Iterator& other) {
             locale = other.locale;
             return *this;
         }
-        
+
         Iterator& operator=(Iterator&& other) noexcept {
             T* temp = locale;
             locale = other.locale;
@@ -144,30 +120,30 @@ public:
             locale += index;
             return *this;
         }
-        
+
         Iterator& operator-= (mlen index) {
             locale -= index;
-                return *this;
+            return *this;
         }
 
         friend Iterator operator+(Iterator lhs, mlen rhs) {
             lhs += rhs;
             return lhs;
         }
-        
+
         friend Iterator operator+(mlen lhs, const Iterator& rhs) {
             return lhs + rhs.locale;
         }
-        
+
         friend Iterator operator-(Iterator lhs, mlen rhs) {
             lhs -= rhs;
-            return rhs;
+            return lhs;
         }
-        
+
         friend Iterator operator-(mlen lhs, const Iterator& rhs) {
             return lhs - rhs.locale;
         }
-        
+
         friend auto operator <=> (const Iterator& lhs, const Iterator& rhs) {
             return lhs.locale <=> rhs.locale;
         }
@@ -177,11 +153,12 @@ public:
     };
     class ConstIterator {
     public:
+        typedef typename ptr_diff difference_type;
         typedef typename T value_type;
         typedef typename T& reference;
         typedef typename T* pointer;
         typedef typename IteratorRandomAccess iterator_category;
-    
+
         ConstIterator() {
             locale = nullptr;
         }
@@ -189,12 +166,16 @@ public:
         ~ConstIterator() {
             locale = nullptr;
         }
-        
+
         ConstIterator(T* ptr) {
             locale = ptr;
         }
 
         ConstIterator(const ConstIterator& other) {
+            locale = other.locale;
+        }
+
+        ConstIterator(const Iterator& other) {
             locale = other.locale;
         }
 
@@ -215,23 +196,23 @@ public:
             return *this;
         }
 
-        const ConstIterator& operator++() const {
+        ConstIterator& operator++() {
             locale++;
             return *this;
         }
 
-        const ConstIterator operator++(int) const {
-            Iterator old = *this;
+        ConstIterator operator++(int) {
+            ConstIterator old = *this;
             operator++();
             return old;
         }
 
-        const ConstIterator get_next() const {
+        ConstIterator get_next() {
             ConstIterator next = this;
             return ++next;
         }
 
-        friend bool operator==(const Iterator& lhs, const Iterator& rhs) {
+        friend bool operator==(const ConstIterator& lhs, const ConstIterator& rhs) {
             return lhs.locale == rhs.locale;
         }
 
@@ -243,31 +224,31 @@ public:
             return locale;
         }
 
-        ConstIterator& operator--() const {
+        ConstIterator& operator--() {
             locale--;
             return *this;
         }
 
-        ConstIterator operator--(int) const {
+        ConstIterator operator--(int) {
             ConstIterator old = *this;
             operator--();
             return old;
         }
 
-        ConstIterator get_prev() const {
+        ConstIterator get_prev() {
             ConstIterator prev = this;
             return --prev;
         }
 
-        ConstIterator& operator[](mlen index) const{
+        const T& operator[](mlen index) const {
             return *(locale + index);
         }
 
-        ConstIterator& operator+= (mlen index) const {
+        ConstIterator& operator+= (mlen index) {
             locale += index;
             return *this;
         }
-        ConstIterator& operator-= (mlen index) const {
+        ConstIterator& operator-= (mlen index) {
             locale -= index;
             return *this;
         }
@@ -291,14 +272,15 @@ public:
         }
 
     private:
-        T* locale;
+        const T* locale;
     };
     typedef ReverseIterator<Iterator> reverse_iterator;
     typedef ReverseIterator<ConstIterator> const_reverse_iterator;
 
     // -----Access-----
 
-    // TODO: improve throw messages
+    // TODO: front, back need to be changed
+    // add push and pop methods
 
     T& at(mlen index) {
         if (N <= index)
@@ -317,13 +299,13 @@ public:
     }
 
     T& front() {
-        return arr_data[0];
+        return arr_data[front];
     }
 
     T& back() {
-        return arr_data[N - 1];
+        return arr_data[0];
     }
-
+    
     T* data() {
         return arr_data;
     }
@@ -356,8 +338,8 @@ public:
         return arr_data;
     }
 
-    // TODO: iterator access
-    //rbegin, rend, rcbegin, rcend
+    // TODO: update these for front and back
+
     Iterator begin() {
         return Iterator(&arr_data[0]);
     }
@@ -371,11 +353,11 @@ public:
             throw "Index out of bounds";
         return Iterator(&arr_data[index]);
     }
-    
+
     ConstIterator cbegin() const {
         return ConstIterator(&arr_data[0]);
     }
-    
+
     ConstIterator cend() const {
         return Iterator(&arr_data[N]);
     }
@@ -398,10 +380,12 @@ public:
 
     // -----Querying-----
 
+    // TODO: size gets diff between front and back
     consteval mlen size() const {
         return N;
     }
 
+    // TODO: are front and back same?
     consteval bool empty() const {
         return (N == 0);
     }
@@ -419,7 +403,7 @@ public:
         }
         return true;
     }
-    
+
     friend const auto operator<=>(const Array<T, N>& lhs, const Array<T, N>& rhs) {
         for (mlen idx = 0; idx < N; idx++) {
             if (lhs[idx] < rhs[idx])
@@ -430,60 +414,19 @@ public:
         return 0;
     }
 
-    // -----Manipulation-----
-    
-    // TODO: cast to array (since this is just a superset of an array)
-
-    // TODO: iterators
-    template<mlen M>
-    Array<T, M> subarray(const mlen start, const mlen end) const {
-        // TODO: if end > start, reverse iterate
-        // TODO: throw if size invalid
-        Array<T, M> new_arr;
-
-        for (mlen idx = start, j = 0; idx < end; idx++, j++) {
-
-            new_arr[j] = this->arr_data[idx];
-        }
-
-        return new_arr;
-    }
-
-    void fill(const T& value) {
-        for (mlen idx = 0; idx < N; idx++) {
-            arr_data[idx] = value;
-        }
-    }
-
-    // TODO: iterators
-    void fill(T& value, mlen start, mlen end) {
-        // TODO: bounds checking
-        for (mlen idx = start; idx < end; idx++) {
-            arr_data[idx] = *value;
-        }
-    }
-
-    // TODO: iterators
-    void swap(mlen first, mlen second) {
-        // TODO: bounds checking
-        T temp = arr_data[first];
-        arr_data[first] = arr_data[second];
-        arr_data[second] = temp;
-    }
-
 private:
 
     mlen get_prev_front() {
         return (front != 0) ? --front : N - 1;
     }
-    
+
     mlen get_next_front() {
-        return (front != (N-1) ? ++front : 0; 
+        return (front != (N - 1) ? ++front : 0;
     }
 
     T arr_data[N];
     // The most recently entered element in our queue
-    mlen front;
+    T* front;
 };
 }
 #endif
