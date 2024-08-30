@@ -132,8 +132,6 @@ static bool test_iterator() {
 
     arr_it = 2 + arr_it;
 
-    // TODO: const iterator tests
-
     return true;
 }
 

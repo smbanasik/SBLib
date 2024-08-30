@@ -58,7 +58,7 @@ typedef unsigned long uint32;
 #endif
 #endif
 
-#ifdef SB_LIB_PTR_SIZE == 8
+#if SB_LIB_PTR_SIZE == 8
 typedef uint64 mlen;
 typedef int64 ptr_diff;
 #else

@@ -12,7 +12,7 @@ namespace SB_LIB {
 template <typename T, mlen N>
 class Array {
 public:
-    Array() : arr_data{} {}
+    Array() : arr_data() {}
 
     // TODO: I'd like to use : arr_data(list) but that doesn't work
     // Unsure why right now.
@@ -210,7 +210,7 @@ public:
         }
 
         ConstIterator operator++(int) {
-            Iterator old = *this;
+            ConstIterator old = *this;
             operator++();
             return old;
         }
@@ -220,15 +220,15 @@ public:
             return ++next;
         }
 
-        friend bool operator==(const Iterator& lhs, const Iterator& rhs) {
+        friend bool operator==(const ConstIterator& lhs, const ConstIterator& rhs) {
             return lhs.locale == rhs.locale;
         }
 
-        T& operator*() const {
+        const T& operator*() const {
             return *locale;
         }
 
-        T* operator->() const {
+        const T* operator->() const {
             return locale;
         }
 
@@ -248,7 +248,7 @@ public:
             return --prev;
         }
 
-        T& operator[](mlen index) const {
+        const T& operator[](mlen index) const {
             return *(locale + index);
         }
 
@@ -280,7 +280,7 @@ public:
         }
 
     private:
-        T* locale;
+        const T* locale;
     };
     typedef ReverseIterator<Iterator> reverse_iterator;
     typedef ReverseIterator<ConstIterator> const_reverse_iterator;
@@ -426,8 +426,6 @@ template<typename T, mlen N>
 Array<T, N> arr_from_carray(T* arr_start, mlen length) {
 
     Array<T, N> new_arr;
-
-    // TODO: use SB_LIB ll_copy to handle this?
 
     for (T* addr = arr_start, j = 0; addr < arr_start + length; addr++, j++) {
 
