@@ -9,6 +9,22 @@
 
 namespace SB_LIB {
 
+// TODO:
+// We need to consider a few things!
+// 1) iterator after the last doesn't work for circ queue - add empty space
+// 2) can we avoid using two pointers to keep track of them? - unlikely
+// 
+// We'll have an N+1 sized implementation with two pointers. This gives us
+// all of the information that we'll need and the extra space can be used
+// to handle the after the end iterator.
+// But for big classes, that kind of sucks.
+// I'd rather have a constant storage size instead such as "is full" or "is empty,"
+// but how can we handle iterators with this?
+// The general idea is that if start == end, that's our stop condition, but it's also our
+// initial condition.
+// Further, iterators are not intrinsically linked to an object, so we can't query it for the information we need.
+// https://stackoverflow.com/questions/17239317/circular-queue-without-wasting-an-entry-or-using-counter
+
 template <typename T, mlen N>
 class CircularQueue {
 public:
