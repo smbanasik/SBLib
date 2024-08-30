@@ -29,7 +29,7 @@ namespace SB_LIB {
     }
     
     template<typename ForwardIterator>
-    void fill(ForwardIterator first, ForwardIterator last, const ForwardIterator::value_type& value) {
+    void fill(ForwardIterator first, ForwardIterator last, const typename ForwardIterator::value_type& value) {
         for(; first != last; ++first) {
             *first = value;
         }

@@ -9,7 +9,7 @@
 #include <initializer_list>
 
 namespace SB_LIB {
-
+/*
 template<typename T, mlen N>
 Array<T,N> arr_from_carray(T* arr_start, mlen length) {
         
@@ -26,7 +26,7 @@ Array<T,N> arr_from_carray(T* arr_start, mlen length) {
 }
     
 template<mlen M, typename ForwardIterator>
-Array<ForwardIterator::value_type, M> arr_from_iterators(ForwardIterator start) {
+Array<typename ForwardIterator::value_type, M> arr_from_iterators(ForwardIterator start) {
     
     Array<ForwardIterator::value_type, M> new_arr; 
     for(mlen counter = 0; counter < M; ++counter, ++start) {
@@ -35,7 +35,7 @@ Array<ForwardIterator::value_type, M> arr_from_iterators(ForwardIterator start) 
     
     return new_arr;
 }
-
+*/
 template <typename T, mlen N>
 class Array {
 public:
@@ -58,7 +58,7 @@ public:
 
     class Iterator {
     public:
-        typedef typename ptr_diff difference_type
+        typedef typename ptr_diff difference_type;
         typedef typename T value_type;
         typedef typename T& reference;
         typedef typename T* pointer;
@@ -186,7 +186,7 @@ public:
     };
     class ConstIterator {
     public:
-        typedef typename ptr_diff difference_type
+        typedef typename ptr_diff difference_type;
         typedef typename T value_type;
         typedef typename T& reference;
         typedef typename T* pointer;
@@ -208,6 +208,10 @@ public:
             locale = other.locale;
         }
 
+        ConstIterator(const Iterator& other) {
+            locale = other.locale;
+        }
+
         ConstIterator(ConstIterator&& other) noexcept {
             locale = other.locale;
             other.locale = nullptr;
@@ -225,18 +229,18 @@ public:
             return *this;
         }
 
-        const ConstIterator& operator++() const {
+        ConstIterator& operator++() {
             locale++;
             return *this;
         }
 
-        const ConstIterator operator++(int) const {
+        ConstIterator operator++(int) {
             Iterator old = *this;
             operator++();
             return old;
         }
 
-        const ConstIterator get_next() const {
+        ConstIterator get_next() {
             ConstIterator next = this;
             return ++next;
         }
@@ -245,39 +249,39 @@ public:
             return lhs.locale == rhs.locale;
         }
 
-        const T& operator*() const {
+        T& operator*() const {
             return *locale;
         }
 
-        const T* operator->() const {
+        T* operator->() const {
             return locale;
         }
 
-        ConstIterator& operator--() const {
+        ConstIterator& operator--() {
             locale--;
             return *this;
         }
 
-        ConstIterator operator--(int) const {
+        ConstIterator operator--(int) {
             ConstIterator old = *this;
             operator--();
             return old;
         }
 
-        ConstIterator get_prev() const {
+        ConstIterator get_prev() {
             ConstIterator prev = this;
             return --prev;
         }
 
-        ConstIterator& operator[](mlen index) const{
+        T& operator[](mlen index) const {
             return *(locale + index);
         }
 
-        ConstIterator& operator+= (mlen index) const {
+        ConstIterator& operator+= (mlen index) {
             locale += index;
             return *this;
         }
-        ConstIterator& operator-= (mlen index) const {
+        ConstIterator& operator-= (mlen index) {
             locale -= index;
             return *this;
         }
