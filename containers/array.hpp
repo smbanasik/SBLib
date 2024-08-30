@@ -9,33 +9,6 @@
 #include <initializer_list>
 
 namespace SB_LIB {
-/*
-template<typename T, mlen N>
-Array<T,N> arr_from_carray(T* arr_start, mlen length) {
-        
-    Array<T, N> new_arr;
-
-    // TODO: use SB_LIB ll_copy to handle this?
-
-    for (T* addr = arr_start, j = 0; addr < arr_start + length; addr++, j++) {
-
-        new_arr[j] = *(addr);
-    }
-    
-    return new_arr;
-}
-    
-template<mlen M, typename ForwardIterator>
-Array<typename ForwardIterator::value_type, M> arr_from_iterators(ForwardIterator start) {
-    
-    Array<ForwardIterator::value_type, M> new_arr; 
-    for(mlen counter = 0; counter < M; ++counter, ++start) {
-        new_arr[counter] = *start;
-    }
-    
-    return new_arr;
-}
-*/
 template <typename T, mlen N>
 class Array {
 public:
@@ -53,7 +26,9 @@ public:
     }
 
     explicit Array(const T& fill_value) {
-        fill(fill_value);
+        for (mlen idx = 0; idx < N; idx++) {
+            arr_data[idx] = fill_value;
+        }
     }
 
     class Iterator {
@@ -446,5 +421,31 @@ private:
 
     T arr_data[N];
 };
+
+template<typename T, mlen N>
+Array<T, N> arr_from_carray(T* arr_start, mlen length) {
+
+    Array<T, N> new_arr;
+
+    // TODO: use SB_LIB ll_copy to handle this?
+
+    for (T* addr = arr_start, j = 0; addr < arr_start + length; addr++, j++) {
+
+        new_arr[j] = *(addr);
+    }
+
+    return new_arr;
+}
+
+template<mlen M, typename ForwardIterator>
+Array<typename ForwardIterator::value_type, M> arr_from_iterators(ForwardIterator start) {
+
+    Array<ForwardIterator::value_type, M> new_arr;
+    for (mlen counter = 0; counter < M; ++counter, ++start) {
+        new_arr[counter] = *start;
+    }
+
+    return new_arr;
+}
 }
 #endif

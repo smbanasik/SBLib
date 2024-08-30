@@ -9,7 +9,7 @@ static bool test_initialization() {
 
     int prim_arr[5] = { 1, 2, 3, 4, 5 };
 
-    //SB_LIB::Array<int, 5> test = SB_LIB::Array<int, 5>::from_carray(prim_arr, 5);
+    auto test = SB_LIB::arr_from_carray<int, 5>(prim_arr, 5);
 
     for (int i = 0; i < 5; i++) {
         if (test.at(i) != prim_arr[i])
