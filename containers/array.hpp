@@ -431,18 +431,16 @@ Array<T, N> arr_from_carray(T* arr_start, mlen length) {
 
         new_arr[j] = *(addr);
     }
-
     return new_arr;
 }
 
-template<mlen M, typename ForwardIterator>
-Array<typename ForwardIterator::value_type, M> arr_from_iterators(ForwardIterator start) {
+template<mlen M, typename ForwardIterator, typename T = typename ForwardIterator::value_type>
+Array<T, M> arr_from_iterators(ForwardIterator start) {
 
-    Array<ForwardIterator::value_type, M> new_arr;
+    Array<T, M> new_arr;
     for (mlen counter = 0; counter < M; ++counter, ++start) {
         new_arr[counter] = *start;
     }
-
     return new_arr;
 }
 }

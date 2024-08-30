@@ -5,15 +5,13 @@
 
 namespace SB_LIB {
 
-    // TODO: redo this to utilize three pointers (end target) rather than mlen length
     template<typename T>
-    void ll_copy(T* addr_one, T* addr_two, mlen length) {
-        for (mlen idx = 0; idx < length; idx++) {
-            *(addr_one + idx) = *(addr_two + idx);
+    void ll_copy(T* first, T* last, T* target) {
+        for (; first != last; first++) {
+            *target = *first;
         }
     }
 
-    // TODO: does this do what we want?
     template<typename ForwardIterator>
     void copy(ForwardIterator first, ForwardIterator last, ForwardIterator target) {
         for (; first != last; ++first, ++target) {
@@ -21,6 +19,7 @@ namespace SB_LIB {
         }
     }
 
+    // TODO: iterator implementation of this
     template<typename T>
     void swap(T& one, T& two) {
         T temp = one;

@@ -39,7 +39,12 @@ static bool test_initialization() {
     
     // TODO: copy constructor test
     // TODO: copy assignment test
-    // TODO: test subarray   
+
+    auto test_iterator = SB_LIB::arr_from_iterators<5>(test.begin());
+
+    SB_LIB::Array<int, 5> copy_const(test_iterator);
+
+    SB_LIB::Array<int, 5> copy_assign = copy_const;
 
     return true;
 }
@@ -142,7 +147,14 @@ static bool test_reviterator() {
 
     SB_LIB::Array<int, 10>::reverse_iterator arr_it(arr.rbegin());
 
+    if (*arr_it != 10)
+        return false;
 
+    if (*(++arr_it) != 9)
+        return false;
+
+    if (*(--arr_it) != 10)
+        return false;
 
     return true;
 }
@@ -184,11 +196,19 @@ static bool test_query_operators() {
 
 static bool test_manipulation() {
 
-    // TODO: fill
+    SB_LIB::Array<int, 5> arr_one;
 
-    // TODO: copy
+    SB_LIB::fill(arr_one.begin(), arr_one.end(), 10);
+
+    SB_LIB::Array<int, 5> arr_two;
+
+    SB_LIB::copy(arr_one.begin(), arr_one.end(), arr_two.begin());
     
-    // TODO: swap
+    SB_LIB::swap(*arr_one.begin(), *arr_one.end());
+
+    if (*arr_one.begin() != *arr_one.end())
+        return false;
+
     return true;
 }
 
